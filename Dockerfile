@@ -5,6 +5,6 @@ WORKDIR /app
 COPY package.json .
 RUN npm install
 
-COPY p2p-exchange.js .
+COPY src/ .
 
 CMD ["node", "p2p-exchange.js"]
