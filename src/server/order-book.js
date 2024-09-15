@@ -1,5 +1,5 @@
 const OPERATION_TYPE = require("./order").OPERATION_TYPE;
-const fs = require("fs").promises;
+const fs = require("node:fs").promises;
 
 class OrderBook {
 	constructor(storageFile, Lock) {
@@ -110,12 +110,12 @@ class OrderBook {
 	async loadState() {
 		try {
 			const data = await fs.readFile(this.storageFile, "utf8");
-			const state = JSON.parse(data);
+			const state = JSON.parse(data || "{}");
 			this.buyOrders = state.buyOrders;
 			this.sellOrders = state.sellOrders;
 		} catch (error) {
-			console.log("Error loading state:", error);
 			if (error.code !== "ENOENT") {
+			  console.log("Error loading state:", error);
 				throw error;
 			}
 		}

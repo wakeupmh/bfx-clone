@@ -1,7 +1,7 @@
-const OPERATION_TYPE = require("../src/order").OPERATION_TYPE;
+const OPERATION_TYPE = require("../src/server/order").OPERATION_TYPE;
 const fs = require("node:fs").promises;
-const Lock = require("../src/lock");
-const OrderBook = require("../src/order-book");
+const Lock = require("../src/server/lock");
+const OrderBook = require("../src/server/order-book");
 
 jest.mock("node:fs/promises");
 
