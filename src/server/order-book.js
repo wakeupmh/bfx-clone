@@ -115,7 +115,7 @@ class OrderBook {
 			this.sellOrders = state.sellOrders;
 		} catch (error) {
 			if (error.code !== "ENOENT") {
-			  console.log("Error loading state:", error);
+				console.log("Error loading state:", error);
 				throw error;
 			}
 		}
