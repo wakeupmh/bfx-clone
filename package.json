@@ -6,7 +6,9 @@
 	"scripts": {
 		"test": "jest",
     "format": "npx @biomejs/biome format --write",
-    "lint": "npx @biomejs/biome lint --write"
+    "lint": "npx @biomejs/biome lint --write",
+    "client": "node src/client/index.js",
+    "server": "node src/server/index.js"
 	},
 	"keywords": [],
 	"author": "",

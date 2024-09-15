@@ -1,7 +1,7 @@
 ## Description
-This project is a simple example of p2p communication using the framework Grenache.
+This project is a simple example of p2p communication using the framework [**Grenache**](https://github.com/bitfinexcom/grenache-grape).
 
-The project consists of a server and a client that communicate with each other through the Grapes network.
+The project consists of a server and a client that communicate with each other through the **Grapes network**.
 
 ## Issues and required improvements
 - The server when receive an order from the client and try to broadcast the order to all clients, it is not working properly, because it seems to be infinite looping, I've tried to fix it, but I couldn't find the issue
@@ -13,7 +13,13 @@ The project consists of a server and a client that communicate with each other t
 - The orderbook is kept in a json file. For a more robust system, we'd want to persist the orderbook to database or a volume
 
 ## Run the project
-First, install the dependencies
+First, install the **Grape** and the project dependencies:
+
+*grape*
+```bash
+npm i -g grenache-grape
+```
+*project dependencies*
 ```
 npm install
 ```
@@ -29,11 +35,11 @@ For the server and client, run the following commands:
 
 *server*
 ```bash
- node src/client/index.js
+ npm run server
 ```
 *client*
 ```bash
-node src/server/index.js
+npm run client
 ```
 
 ## Tests
