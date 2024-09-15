@@ -1,0 +1,41 @@
+version: '3'
+services:
+  grape1:
+    image: node:18-alpine
+    command: bash -c "npm install -g grenache-grape && grape --dp 20001 --aph 30001 --bn '127.0.0.1:20002'"
+    networks:
+      - grape-network
+
+  grape2:
+    image: node:18-alpine
+    command: bash -c "npm install -g grenache-grape && grape --dp 20002 --aph 40001 --bn '127.0.0.1:20001'"
+    networks:
+      - grape-network
+
+  exchange1:
+    build: .
+    environment:
+      - GRAPE_ADDRESS=grape1:30001
+      - STORAGE_FILE=orderbook1.json
+      - PORT=8081
+    depends_on:
+      - grape1
+      - grape2
+    networks:
+      - grape-network
+
+  exchange2:
+    build: .
+    environment:
+      - GRAPE_ADDRESS=grape2:40001
+      - STORAGE_FILE=orderbook2.json
+      - PORT=8082
+    depends_on:
+      - grape1
+      - grape2
+    networks:
+      - grape-network
+
+networks:
+  grape-network:
+    driver: bridge
