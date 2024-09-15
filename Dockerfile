@@ -7,4 +7,4 @@ RUN npm install
 
 COPY src/ .
 
-CMD ["node", "p2p-exchange.js"]
+CMD ["node", "src/server/index.js"]

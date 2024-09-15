@@ -1,41 +1,82 @@
-version: '3'
+x-common-variables: &common-variables
+  GRAPE_APH: "30001"
+  GRAPE_HOST: "grape1"
+
 services:
   grape1:
-    image: node:18-alpine
-    command: bash -c "npm install -g grenache-grape && grape --dp 20001 --aph 30001 --bn '127.0.0.1:20002'"
+    container_name: grape1
+    build:
+      context: .
+      dockerfile: Dockerfile.grape
+    restart: unless-stopped
     networks:
-      - grape-network
+      - grapes
+    environment:
+      <<: *common-variables
+      GRAPE_DP: "20001"
+      GRAPE_BN: "20002"
+      GRAPE_BIND: "grape2"
 
   grape2:
-    image: node:18-alpine
-    command: bash -c "npm install -g grenache-grape && grape --dp 20002 --aph 40001 --bn '127.0.0.1:20001'"
+    container_name: grape2
+    build:
+      context: .
+      dockerfile: Dockerfile.grape
+    restart: unless-stopped
+    depends_on:
+      grape1:
+        condition: service_healthy
     networks:
-      - grape-network
-
-  exchange1:
-    build: .
+      - grapes
     environment:
-      - GRAPE_ADDRESS=grape1:30001
-      - STORAGE_FILE=orderbook1.json
-      - PORT=8081
+      <<: *common-variables
+      GRAPE_DP: "20002"
+      GRAPE_APH: "40001"
+      GRAPE_BN: "20001"
+      GRAPE_BIND: "grape1"
+
+  exchange_server1:
+    build: .
+    command: node server/index.js
+    environment:
+      <<: *common-variables
+      STORAGE_FILE: "orderbook1.json"
+    depends_on:
+      grape1:
+        condition: service_healthy
+      grape2:
+        condition: service_healthy
+    networks:
+      - grapes
+
+  exchange_server2:
+    build: .
+    command: node server/index.js
+    environment:
+      <<: *common-variables
+      STORAGE_FILE: "orderbook2.json"
+    depends_on:
+      grape1:
+        condition: service_healthy
+      grape2:
+        condition: service_healthy
+    networks:
+      - grapes
+
+  exchange_client:
+    build: .
+    command: node client/index.js
+    environment:
+      <<: *common-variables
+      STORAGE_FILE: "orderbook1.json"
     depends_on:
       - grape1
       - grape2
+      - exchange_server1
+      - exchange_server2
     networks:
-      - grape-network
-
-  exchange2:
-    build: .
-    environment:
-      - GRAPE_ADDRESS=grape2:40001
-      - STORAGE_FILE=orderbook2.json
-      - PORT=8082
-    depends_on:
-      - grape1
-      - grape2
-    networks:
-      - grape-network
+      - grapes
 
 networks:
-  grape-network:
+  grapes:
     driver: bridge
